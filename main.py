@@ -44,7 +44,7 @@ def saveData(final_prices):
 
 
 def start():
-    for days in range(1, 21):
+    for days in range(1, 11):
         retry_count = 0
         max_retries = 10
         while retry_count < max_retries:
@@ -57,8 +57,8 @@ def start():
                 saveData(html_prices)
                 break
             retry_count += 1
-            time.sleep(2.5)
             print('Data missing. {}/{} retries'.format(retry_count, max_retries))
+            time.sleep(2.5)
             if retry_count == max_retries:
                 sys.exit('Too many retries. Exiting program.')
         # print('Job failed')
@@ -68,11 +68,10 @@ def start():
 url = 'https://reiseauskunft.bahn.de/bin/query.exe/dn?ld=4314&country=DEU&protocol=https:&rt=1&OK='
 dataArray = [
     'HWAI%3DQUERY%21rit=no&queryPageDisplayed=yes&HWAI%3DQUERY%21displayed=yes&HWAI%3DJS%21ajax=yes&HWAI%3DJS%21js' \
-    '=yes&REQ0JourneyStopsS0A=255&REQ0JourneyStopsS0G=K%F6ln+Hbf&REQ0JourneyStopsS0ID=A%3D1%40O%3DK%F6ln+Hbf%40X' \
-    '%3D6958730%40Y%3D50943029%40U%3D80%40L%3D8000207%40B%3D1%40p%3D1675107033%40&REQ0JourneyStopsS0o=8' \
-    '&REQ0JourneyStopsS0a=131072&REQ0JourneyStopsZ0A=255&REQ0JourneyStopsZ0G=Middelburg&REQ0JourneyStopsZ0ID=A%3D1' \
-    '%40O%3DMiddelburg%40X%3D3617080%40Y%3D51494832%40U%3D80%40L%3D008400436%40B%3D1%40p%3D1675107033%40' \
-    '&REQ0JourneyStopsZ0o=8&REQ0JourneyStopsZ0a=131072&REQ0JourneyDate={}&REQ0JourneyTime=14%3A00' \
+    '=yes&REQ0JourneyStopsS0A=255&REQ0JourneyStopsS0G=Porz%28Rhein%29&REQ0JourneyStopsS0ID=A%3D1%40O%3DPorz%28Rhein' \
+    '%29%40X%3D7064721%40Y%3D50882910%40U%3D80%40L%3D008004869%40B%3D1%40p%3D1675279635%40' \
+    '&REQ0JourneyStopsS0a=131072&REQ0JourneyStopsZ0A=255&REQ0JourneyStopsZ0G=Middelburg' \
+    '&REQ0JourneyDate={}&REQ0JourneyTime=14%3A00' \
     '&REQ0HafasSearchForw=1&REQ1JourneyDate=&REQ1JourneyTime=&REQ1HafasSearchForw=1&useFastConnectionsOnly=on&HWAI' \
     '%3DQUERY%24PRODUCTS%240_0%21show=yes&traveller_Nr=1&REQ0Tariff_TravellerType.1=Y' \
     '&REQ0Tariff_TravellerReductionClass.1=0&REQ0Tariff_TravellerAge.1=&REQ0Tariff_Class=2&REQ0HafasChangeTime=0' \
