@@ -1,0 +1,34 @@
+{
+    "departures": [
+        {
+            "name": "Porz-Wahn",
+            "id": ""
+        },
+        {
+            "name": "Porz%28Rhein%29",
+            "id": "A%3D1%40O%3DPorz%28Rhein%29%40X%3D7064721%40Y%3D50882910%40U%3D80%40L%3D008004869%40B%3D1%40p%3D1675279635%40"
+        },
+        {
+            "name": "Urbach+Antoniusstr.%2C+K%F6ln",
+            "id": "A%3D1%40O%3DUrbach+Antoniusstr.%2C+K%F6ln%40X%3D7092174%40Y%3D50881723%40U%3D80%40L%3D000443498%40B%3D1%40p%3D1675712273%40"
+        },
+        {
+            "name": "Lind+Linder+Mauspfad%2C+K%F6ln",
+            "id": "A%3D1%40O%3DUrbach+Antoniusstr.%2C+K%F6ln%40X%3D7092174%40Y%3D50881723%40U%3D80%40L%3D000443498%40B%3D1%40p%3D1675712273%40"
+        },
+        {
+            "name": "K%F6ln+Hbf",
+            "id": "A%3D1%40O%3DK%F6ln+Hbf%40X%3D6958730%40Y%3D50943029%40U%3D80%40L%3D008000207%40B%3D1%40p%3D1675712273%40"
+        },
+        {
+            "name": "K%F6ln+Messe%2FDeutz",
+            "id": "A%3D1%40O%3DK%F6ln+Messe%2FDeutz%40X%3D6975000%40Y%3D50940872%40U%3D80%40L%3D008003368%40B%3D1%40p%3D1675712273%40"
+        }
+    ],
+    "arrivals": [
+        {
+            "name": "Middelburg",
+            "id": "A=1@O=Middelburg@X=3617080@Y=51494832@U=80@L=008400436@B=1@p=1675712273@"
+        }
+    ]
+}
