@@ -4,17 +4,16 @@ import time
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import requests
+import json
 
 
-def getHtml(data, day_count):
+def get_html(data, date, departure, departure_id, arrival, arrival_id):
     retry_count = 0
     max_retries = 5
 
     while retry_count < max_retries:
         try:
-            date = (datetime.now() + timedelta(days=day_count)).strftime('%d.%m.%Y')
-            print(date, day_count)
-            data = data.format(date)
+            data = data.format(departure, departure_id, arrival, arrival_id, date)
             request = requests.post(url, data=data)
             return request.text
         except requests.exceptions.ConnectionError as e:
@@ -27,7 +26,7 @@ def getHtml(data, day_count):
                 raise e
 
 
-def getPrices(prices_html):
+def get_prices(prices_html):
     temp_prices = []
     for price in prices_html:
         price = price.text.strip()
@@ -39,39 +38,58 @@ def getPrices(prices_html):
     return temp_prices
 
 
-def saveData(final_prices):
-    pricesArray.append(final_prices)
+def save_data(prices, departure, arrival, date):
+    final_array = [prices, departure, arrival, date]
+    pricesArray.append(final_array)
 
 
-def start():
-    for days in range(1, 11):
-        retry_count = 0
-        max_retries = 10
-        while retry_count < max_retries:
-            html_text = getHtml(dataArray[0], days)
-            soup = BeautifulSoup(html_text, 'lxml')
-            # from_field = soup.find_all('div', id='tbpSlotContainer')
-            prices_html = soup.find_all('div', class_='tbpSlotPrice')
-            html_prices = getPrices(prices_html)
-            if html_prices:
-                saveData(html_prices)
-                break
-            retry_count += 1
-            print('Data missing. {}/{} retries'.format(retry_count, max_retries))
-            time.sleep(2.5)
-            if retry_count == max_retries:
-                sys.exit('Too many retries. Exiting program.')
-        # print('Job failed')
-        # break
+def init():
+    with open('stations.json', 'r') as stations_file:
+        stations = json.load(stations_file)
+
+    start(stations["departures"], stations["arrivals"])
+    start(stations["arrivals"], stations["departures"])
+
+
+def start(departures, arrivals):
+    for arrival_stations in arrivals:
+        for departure_station in departures:
+            for days in range(1, 8):
+                retry_count = 0
+                max_retries = 10
+                date = (datetime.now() + timedelta(days=days)).strftime('%d.%m.%Y')
+
+                print(date, departure_station["name"], arrival_stations["name"])
+                while retry_count < max_retries:
+                    html_text = get_html(
+                        dataArray[0],
+                        date,
+                        departure_station["name"],
+                        departure_station["id"],
+                        arrival_stations["name"],
+                        arrival_stations["id"]
+                    )
+                    soup = BeautifulSoup(html_text, 'lxml')
+                    # from_field = soup.find_all('div', id='tbpSlotContainer')
+                    prices_html = soup.find_all('div', class_='tbpSlotPrice')
+                    html_prices = get_prices(prices_html)
+                    if html_prices:
+                        save_data(html_prices, departure_station["name"], arrival_stations["name"], date)
+                        print("-----------------------------------------------")
+                        break
+                    retry_count += 1
+                    print('Data missing. {}/{} retries'.format(retry_count, max_retries))
+                    time.sleep(2.5)
+                    if retry_count == max_retries:
+                        sys.exit('Too many retries. Exiting program.')
 
 
 url = 'https://reiseauskunft.bahn.de/bin/query.exe/dn?ld=4314&country=DEU&protocol=https:&rt=1&OK='
 dataArray = [
     'HWAI%3DQUERY%21rit=no&queryPageDisplayed=yes&HWAI%3DQUERY%21displayed=yes&HWAI%3DJS%21ajax=yes&HWAI%3DJS%21js' \
-    '=yes&REQ0JourneyStopsS0A=255&REQ0JourneyStopsS0G=Porz%28Rhein%29&REQ0JourneyStopsS0ID=A%3D1%40O%3DPorz%28Rhein' \
-    '%29%40X%3D7064721%40Y%3D50882910%40U%3D80%40L%3D008004869%40B%3D1%40p%3D1675279635%40' \
-    '&REQ0JourneyStopsS0a=131072&REQ0JourneyStopsZ0A=255&REQ0JourneyStopsZ0G=Middelburg' \
-    '&REQ0JourneyDate={}&REQ0JourneyTime=14%3A00' \
+    '=yes&REQ0JourneyStopsS0A=255&REQ0JourneyStopsS0G={}&REQ0JourneyStopsS0ID={}' \
+    '&REQ0JourneyStopsS0a=131072&REQ0JourneyStopsZ0A=255&REQ0JourneyStopsZ0G={}' \
+    '&REQ0JourneyStopsZ0ID={}&REQ0JourneyDate={}&REQ0JourneyTime=14%3A00' \
     '&REQ0HafasSearchForw=1&REQ1JourneyDate=&REQ1JourneyTime=&REQ1HafasSearchForw=1&useFastConnectionsOnly=on&HWAI' \
     '%3DQUERY%24PRODUCTS%240_0%21show=yes&traveller_Nr=1&REQ0Tariff_TravellerType.1=Y' \
     '&REQ0Tariff_TravellerReductionClass.1=0&REQ0Tariff_TravellerAge.1=&REQ0Tariff_Class=2&REQ0HafasChangeTime=0' \
@@ -93,7 +111,8 @@ dataArray = [
     '&existTbpMode=1&tbpMode=1&rtMode=12&start=Suchen'
 ]
 pricesArray = []
-start()
-print(pricesArray)
+init()
+for x in pricesArray:
+    print(x)
 print("Bytes: " + str(sys.getsizeof(pricesArray)))
 
