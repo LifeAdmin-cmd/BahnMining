@@ -2,7 +2,9 @@ import sys
 import time
 
 from bs4 import BeautifulSoup
+from IPython.display import display
 from datetime import datetime, timedelta
+import pandas as pd
 import requests
 import json
 
@@ -47,14 +49,14 @@ def init():
     with open('stations.json', 'r') as stations_file:
         stations = json.load(stations_file)
 
-    start(stations["departures"], stations["arrivals"])
+    # start(stations["departures"], stations["arrivals"])
     start(stations["arrivals"], stations["departures"])
 
 
 def start(departures, arrivals):
     for arrival_stations in arrivals:
         for departure_station in departures:
-            for days in range(1, 8):
+            for days in range(1, 4):
                 retry_count = 0
                 max_retries = 10
                 date = (datetime.now() + timedelta(days=days)).strftime('%d.%m.%Y')
@@ -111,8 +113,12 @@ dataArray = [
     '&existTbpMode=1&tbpMode=1&rtMode=12&start=Suchen'
 ]
 pricesArray = []
+date = input('Type the starting date')
+days = input('How many days should be checked form the selected date?')
 init()
-for x in pricesArray:
-    print(x)
-print("Bytes: " + str(sys.getsizeof(pricesArray)))
-
+# for x in pricesArray:
+#     print(x)
+# print("Bytes: " + str(sys.getsizeof(pricesArray)))
+df = pd.DataFrame(pricesArray)
+df.columns = ['prices', 'departure', 'arrival', 'date']
+display(df.sort_values(['date']))
