@@ -18,7 +18,7 @@ def get_html(data, date, departure, departure_id, arrival, arrival_id, bc_number
     while retry_count < max_retries:
         try:
             data = data.format(departure, departure_id, arrival, arrival_id, date, bc_number)
-            request = requests.post(url, data=data)
+            request = session.post(url, data=data)
             return request.text
         except requests.exceptions.ConnectionError as e:
             retry_count += 1
@@ -27,7 +27,8 @@ def get_html(data, date, departure, departure_id, arrival, arrival_id, bc_number
             time.sleep(5)
             if retry_count == max_retries:
                 # Raise the exception if the maximum number of retries has been reached
-                raise e
+                print(e)
+                raise Exception("Is Tor running?")
 
 
 def get_prices(prices_html):
@@ -120,6 +121,15 @@ def save_to_parquet(prices_list):
         display(combined_data)
 
 
+def get_tor_session():
+    build_session = requests.session()
+    # Tor uses the 9050 port as the default socks port
+    build_session.proxies = {'http': 'socks5h://127.0.0.1:9050',
+                             'https': 'socks5h://127.0.0.1:9050'}
+    return build_session
+
+
+session = get_tor_session()
 url = 'https://reiseauskunft.bahn.de/bin/query.exe/dn?ld=4314&country=DEU&protocol=https:&rt=1&OK='
 dataArray = [
     'HWAI%3DQUERY%21rit=no&queryPageDisplayed=yes&HWAI%3DQUERY%21displayed=yes&HWAI%3DJS%21ajax=yes&HWAI%3DJS%21js' \
