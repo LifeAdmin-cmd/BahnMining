@@ -1,5 +1,5 @@
 # BahnMining
-I will data mine the prices of a few Deutsche Bahn connections based on days and time.
+Durch das Pendeln zwischen den Niederlanden und Deutschland ist mir aufgefallen, dass sich die Preise der Verbindungen stark von Zielbahnhof zu Zielbahnhof unterscheiden, obwohl diese meist sehr nah beieinander liegen und deshalb keine Preisschwankungen um die 50% möglich sein sollten.
 
 ## Thesis
 Je mehr Haltestellen eine Verbindung hat, desto günstiger ist sie
